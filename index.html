@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Text Highlight</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: Arial;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      }
+      main {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        width: 100%;
+        max-width: 600px;
+      }
+      div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      input,
+      textarea,
+      button {
+        padding: 0.5rem;
+        border: 1px solid gray;
+        border-radius: 4px;
+      }
+      input,
+      textarea {
+        display: block;
+        width: 100%;
+      }
+      button {
+        padding: 0.5rem 1rem;
+        background-color: gainsboro;
+
+        &:hover {
+          background-color: lightgray;
+        }
+
+        &:active {
+          border-color: lightgray;
+        }
+      }
+      ul {
+        font-size: 12px;
+      }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Text Highlight</h1>
+      </header>
+      <div>
+        <input type="text" id="urlInput" placeholder="URL">
+        <textarea id="textInput" rows="5" placeholder="Text to highlight"></textarea>
+        <span id="charCount"></span>
+        <button onclick="generate()">Generate</button>
+      </div>
+      <div id="resultArea" class="hide">
+        <p>Click the following link to see the highlighted text in the page.</p>
+        <p><a id="result" href="#" target="_blank"></a></p>
+      </div>
+      <hr>
+      <footer>
+        <h5>Disclaimer</h5>
+        <ul>
+          <li>Works on Chrome and Safari (better on Safari).</li>
+          <li>Some client-side generate websites may not work.</li>
+        </ul>
+      </footer>
+    </main>
+    <script>
+      const urlInput = document.getElementById('urlInput');
+      const textInput = document.getElementById('textInput');
+      const result = document.getElementById('result');
+      const charCount = document.getElementById('charCount');
+      const resultArea = document.getElementById('resultArea');
+
+      const createURLWithoutHash = (textURL) => {
+        try {
+          const urlObj = new URL(textURL);
+          const fullURL = urlObj.origin + urlObj.pathname + urlObj.search;
+          return fullURL;
+        } catch (error) {
+          return '';
+        }
+      }
+
+      function generate() {
+        const url = urlInput.value;
+        const text = textInput.value;
+        const trimURL = url.trim();
+        const trimText = text.trim();
+        const baseURL = createURLWithoutHash(trimURL);
+        result.href = '#';
+        result.innerText = '';
+        charCount.innerText = '';
+
+        if (baseURL && trimText) {
+          const encodeText = encodeURIComponent(trimText);
+          const newURL = baseURL + '#:~:text=' + encodeText;
+          charCount.innerText = trimText.length;
+          result.innerText = newURL;
+          result.href = newURL;
+          resultArea.classList.remove('hide');
+        }
+      }
+    </script>
+  </body>
+</html>
